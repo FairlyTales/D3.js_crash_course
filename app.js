@@ -21,15 +21,18 @@ const DATA = [
   },
 ];
 
-const container = d3.select('div')
-  .classed('container', true)
-  .style('border', '1px solid black');
+const xScale = d3.scaleBand().domain(DATA.map((dataPoint) => dataPoint.region)).rangeRound([0, 250]).padding(0.1);
+const yScale = d3.scaleLinear().domain([0, 50]).range([200, 0]);
+
+const container = d3.select('svg').classed('container', true);
 
 container
   .selectAll('.bar')
   .data(DATA)
   .enter()
-  .append('div')
+  .append('rect')
   .classed('bar', true)
-  .style('width', '30px')
-  .style('height', d => `${d.value * 4}px`);
+  .attr('width', xScale.bandwidth())
+  .attr('height', (data) => 200 - yScale(data.value))
+  .attr('x', (data) => xScale(data.region))
+  .attr('y', (data) => yScale(data.value));
